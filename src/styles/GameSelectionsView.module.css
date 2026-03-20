@@ -1,0 +1,18 @@
+body {
+    width: 150px;
+    height: 600px;
+    display: grid;
+    font-family: Arial, sans-serif;
+}
+
+h2 {
+    text-align: center;
+    left: 18px;
+    opacity: 0.5;
+    
+}
+
+h1 {
+    text-align: center;
+    left: 6px
+}
