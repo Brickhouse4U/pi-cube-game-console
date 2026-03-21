@@ -1,6 +1,8 @@
+import style from '/src/styles/GameSnippet.module.css'
+
 function GameSnippet(props) {
     return (
-        <img src={props.src} alt="Game Image" width="400" height="320"></img>
+        <img src={props.src} alt="Game Image" className={style.gameSnippetContainer} />
     )
 }
 

@@ -1,13 +1,17 @@
 import { useState } from "react"
-import style from '/src/styles/GameSelectionsView.module.css'
+import GameSelectionsViewStyle from "/src/styles/GameSelectionsView.module.css"
+import UpButton from "./UpButton"
+import DownButton from "./DownButton"
 
 function GameSelectionsView(gameTitles) {
     return (
-        <div>
-            <h2>{gameTitles.nextGame}</h2>
-            <h1>{gameTitles.currentGame}</h1>
-            <h2>{gameTitles.prevGame}</h2>
-        </div>
+            <div className={GameSelectionsViewStyle.container}>
+                <UpButton />
+                <span className={GameSelectionsViewStyle.prevText}>{gameTitles.prevGame}</span>
+                <span className={GameSelectionsViewStyle.currentText} >{gameTitles.currentGame}</span>
+                <span className={GameSelectionsViewStyle.nextText} >{gameTitles.nextGame}</span>
+                <DownButton />
+            </div>
     )
 }
 
