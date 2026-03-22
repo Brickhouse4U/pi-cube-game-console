@@ -1,4 +1,4 @@
-import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
+import { HashRouter, Link, Route, Routes } from 'react-router-dom';
 import MainMenu from './pages/MainMenu'
 import Games from './pages/Games';
 import Options from './pages/Options';
@@ -6,14 +6,14 @@ import Options from './pages/Options';
 
 function App() {
   return (
-      <BrowserRouter>
+      <HashRouter>
         {/* Routes swap out the entire cube */}
         <Routes>
           <Route path="/" element={<MainMenu />} />
           <Route path="/games" element={<Games />} />
           <Route path="/options" element={<Options />} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
   )
 }
 
