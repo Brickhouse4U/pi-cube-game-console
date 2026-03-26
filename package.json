@@ -8,7 +8,7 @@
     "electron": "./node_modules/.bin/electron .",
     "start": "./node_modules/.bin/concurrently \"npm run dev\" \"npm run electron\"",
     "package:local": "vite build && electron-builder --linux --x64", 
-  "package:pi": "vite build && electron-builder --linux --x64"
+    "package:pi": "vite build && electron-builder --linux --armv7l"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.0",
@@ -24,7 +24,7 @@
   },
   "build": {
     "appId": "com.yourname.game-console-menu",
-    "productName": "Game Console Menu",
+    "productName": "Game-Console-Menu",
     "files": [
       "dist/**/*",
       "electron/**/*"
@@ -33,7 +33,7 @@
       "target": [
         {
           "target": "AppImage",
-          "arch": ["x64"]
+          "arch": ["armv7l"]
         }
       ]
     }
