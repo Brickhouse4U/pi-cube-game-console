@@ -1,0 +1,49 @@
+.container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 400px;
+}
+
+.containerLabel {
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    font-size: 22px;
+    white-space: nowrap;   /* prevents label from wrapping */
+    flex-shrink: 0;        /* prevents label from shrinking */
+
+}
+
+.containerSlider {
+    -webkit-appearance: none;
+    width: 300px;
+    height: 5px;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.containerSlider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 5px; /* Set a specific slider handle width */
+  height: 40px; /* Slider handle height */
+  background: #fff; 
+  cursor: pointer; /* Cursor on hover */
+  border-radius: 24%;
+}
+
+.containerSlider::-moz-range-thumb {
+  width: 10px; /* Set a specific slider handle width */
+  height: 15px; /* Slider handle height */
+  background: #fff; 
+  cursor: pointer; /* Cursor on hover */
+}

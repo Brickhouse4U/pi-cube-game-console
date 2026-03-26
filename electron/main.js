@@ -1,10 +1,13 @@
 const { app, BrowserWindow, screen } = require('electron')
 const path = require('path')
 
+const isDev = !app.isPackaged
+
 function createWindow() {
   const displays = screen.getAllDisplays()
 
-  const targetDisplay = displays[1]
+  // Use second display if available, otherwise fall back to primary
+  const targetDisplay = displays[1] ?? displays[0]
 
   const win = new BrowserWindow({
     x: targetDisplay.bounds.x,
@@ -20,9 +23,14 @@ function createWindow() {
     }
   })
 
-  // Load the Vite dev server in development
-  win.webContents.openDevTools() // ← ADD THIS
-  win.loadURL('http://localhost:5173')
+  if (isDev) {
+    win.loadURL('http://localhost:5173')
+  } else {
+    win.loadFile(path.join(__dirname, '../dist/index.html'))
+  }
+
+  // Temporarily open DevTools in all modes to debug
+  // win.webContents.openDevTools()
 }
 
 app.whenReady().then(createWindow)
