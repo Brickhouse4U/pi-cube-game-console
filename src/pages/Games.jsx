@@ -1,16 +1,14 @@
-import CancelButton from "../components/CancelButton";
+import CancelButton from "../components/Buttons/CancelButton";
 import CubeLayout from "../components/CubeLayout";
-import GameSelectionsView from "../components/GameSelectionsView";
-import GameSnippet from "../components/GameSnippet"
-import CubeLayoutStyle from "/src/styles/CubeLayout.module.css";
-import GameSnippetStyle from "/src/styles/GameSnippet.module.css";
+import GameSelectionsView from "../components/GamesPageComponents/GameSelectionsView";
+import GameSnippet from "../components/GamesPageComponents/GameSnippet"
 
 
 function Games() {
     return (
     <CubeLayout width="800px" height="800px">
             <GameSelectionsView nextGame="Super Mario World" currentGame="Super Mario 64" prevGame="Super Smash Bros"/>
-            <GameSnippet src="src/resources/mario.png" />
+            <GameSnippet src="electron/public/assets/pictures/mario.png" />
             <CancelButton x="600px" y="600px" dst="/" />
     </CubeLayout>
     )

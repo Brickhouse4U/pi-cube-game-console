@@ -1,6 +1,8 @@
 const { app, BrowserWindow, screen, ipcMain } = require('electron')
 const path = require('path')
 const { detectDisplay, applyBrightness, loadBrightness } = require('./utils/brightness.js');
+const { getVolume, setVolume, toggleMute } = require('./utils/volume');
+
 
 const isDev = !app.isPackaged
 
@@ -35,7 +37,7 @@ function createWindow() {
   }
 
   // Temporarily open DevTools in all modes to debug
-  // win.webContents.openDevTools()
+  win.webContents.openDevTools()
 }
 
 ipcMain.handle('brightness:get', () => currentBrightness);
@@ -45,6 +47,18 @@ ipcMain.handle('brightness:set', async (_, value) => {
     applyBrightness(clamped);
     currentBrightness = clamped;
     return currentBrightness;
+});
+
+ipcMain.handle('get-volume', async () => {
+  return await getVolume();
+});
+
+ipcMain.handle('set-volume', async (event, level) => {
+  return await setVolume(level);
+});
+
+ipcMain.handle('toggle-mute', async () => {
+  return await toggleMute();
 });
 
 app.whenReady().then(async () => {

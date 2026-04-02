@@ -6,3 +6,13 @@
     border-radius: 16px;
     cursor: pointer;
 }
+
+.container:hover {
+    background-color: darkgray;
+    transform: scale(1.05);      /* subtle grow */
+}
+
+.container:active {
+    background-color: gray;
+    transform: scale(0.95);      /* slight press down feel */
+}
