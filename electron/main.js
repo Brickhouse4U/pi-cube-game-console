@@ -1,12 +1,15 @@
-const { app, BrowserWindow, screen } = require('electron')
+const { app, BrowserWindow, screen, ipcMain } = require('electron')
 const path = require('path')
+const { detectDisplay, applyBrightness, loadBrightness } = require('./utils/brightness.js');
 
 const isDev = !app.isPackaged
+
+let currentBrightness = 1.0;
 
 function createWindow() {
   const displays = screen.getAllDisplays()
 
-  // Use second display if available, otherwise fall back to primary
+    // Use second display if available, otherwise fall back to primary
   const targetDisplay = displays[1] ?? displays[0]
 
   const win = new BrowserWindow({
@@ -19,7 +22,9 @@ function createWindow() {
     frame: false,
     backgroundColor: '#000000',
     webPreferences: {
-      nodeIntegration: true
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false
     }
   })
 
@@ -33,10 +38,34 @@ function createWindow() {
   // win.webContents.openDevTools()
 }
 
-app.whenReady().then(createWindow)
+ipcMain.handle('brightness:get', () => currentBrightness);
+
+ipcMain.handle('brightness:set', async (_, value) => {
+    const clamped = Math.min(1.0, Math.max(0.1, value));
+    applyBrightness(clamped);
+    currentBrightness = clamped;
+    return currentBrightness;
+});
+
+app.whenReady().then(async () => {
+  try {
+    const display = await detectDisplay();
+
+    if (!display) {
+      console.warn('No DDC/CI display detected, brightness control unavailable');
+    } else {
+      currentBrightness = loadBrightness();
+      applyBrightness(currentBrightness);
+    }
+  } catch (err) {
+    console.error('Brightness init failed:', err.message);
+  }
+
+  createWindow();
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
-})
+});
