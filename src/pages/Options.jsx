@@ -1,31 +1,53 @@
 import CubeLayout from "../components/CubeLayout";
-import CustomSlider from "../components/CustomSlider";
-import CancelButton from "../components/CancelButton";
-import OptionsStyle from "../styles/Options.module.css"
+import CustomSlider from "../components/OptionsPageComponents/CustomSlider";
+import CancelButton from "../components/Buttons/CancelButton";
+import OptionsStyle from "../styles/Options.module.css";
+import { preload } from "/electron/utils/sound";
 
 import { useState, useEffect, useMemo } from "react";
 import { debounce } from "lodash";
 
 function Options() {
     const [brightness, setBrightnessState] = useState(1.0);
-    const [volume, setVolume] = useState(10);
+    const [volume, setVolumeState] = useState(1.0);
 
     useEffect(() => {
+        // Preload sounds
+        preload("rollover");
+
         window.brightness.get().then(setBrightnessState);
+        window.volume.get().then(setVolumeState);
     }, []);
 
-    const debouncedSet = useMemo(() =>
+
+    // Debounced brightness setter
+    const debouncedSetBrightness = useMemo(() =>
         debounce((value) => window.brightness.set(value), 100)
     , []);
 
+    // Debounced volume setter
+    const debouncedSetVolume = useMemo(() =>
+        debounce((value) => window.volume.set(value), 100)
+    , []);
+    
+    // Cleanup debounces on unmount
     useEffect(() => {
-        return () => debouncedSet.cancel();
-    }, [debouncedSet]);
+        return () => {
+            debouncedSetBrightness.cancel();
+            debouncedSetVolume.cancel();
+        };
+    }, [debouncedSetBrightness, debouncedSetVolume]);
 
-    const handleChange = (e) => {
+    const handleBrightnessChange = (e) => {
         const value = parseFloat(e.target.value);
         setBrightnessState(value);
-        debouncedSet(value);
+        debouncedSetBrightness(value);
+    };
+
+    const handleVolumeChange = (e) => {
+        const value = parseFloat(e.target.value);
+        setVolumeState(value);
+        debouncedSetVolume(value);
     };
 
     return (
@@ -38,15 +60,15 @@ function Options() {
                     max="1.0" 
                     step="0.1" 
                     value={brightness} 
-                    onChange={handleChange}/>
+                    onChange={handleBrightnessChange}/>
 
                 <CustomSlider 
-                    title="Volume:     " 
-                    min="0" 
-                    max="10" 
-                    step="1" 
+                    title="Volume:" 
+                    min="0.0" 
+                    max="1.0" 
+                    step="0.1" 
                     value={volume} 
-                    onChange={(e) => setVolume(e.target.value)}/>
+                    onChange={handleVolumeChange}/>
             </div>
             <CancelButton x="480px" y="480px" dst="/" />
         </CubeLayout>
