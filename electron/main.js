@@ -37,8 +37,12 @@ function createWindow() {
   }
 
   // Temporarily open DevTools in all modes to debug
-  win.webContents.openDevTools()
+  // win.webContents.openDevTools()
 }
+
+ipcMain.handle('get-resources-path', () => {
+    return app.getAppPath().replace('app.asar', '');
+});
 
 ipcMain.handle('brightness:get', () => currentBrightness);
 

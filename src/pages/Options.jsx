@@ -13,7 +13,7 @@ function Options() {
 
     useEffect(() => {
         // Preload sounds
-        preload("rollover", "/electron/public/assets/sounds/rollover.ogg");
+        preload("rollover");
 
         window.brightness.get().then(setBrightnessState);
         window.volume.get().then(setVolumeState);

@@ -2,8 +2,8 @@ import CubeLayoutStyle from "/src/styles/CubeLayout.module.css";
 import { Link } from 'react-router-dom'; // ← ADD THIS
 import { preload, play } from "/electron/utils/sound.js";
 
-preload("click", "/electron/public/assets/sounds/click.ogg");
-preload("hover", "/electron/public/assets/sounds/hover.ogg");
+preload("click");
+preload("hover");
 
 function MenuOption(props) {
     return (

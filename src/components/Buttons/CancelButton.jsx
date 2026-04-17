@@ -2,8 +2,8 @@ import { useNavigate } from 'react-router-dom'
 import CancelButtonStyle from "/src/styles/CancelButton.module.css"
 import { preload, play } from "/electron/utils/sound.js";
 
-preload("click", "/electron/public/assets/sounds/click.ogg");
-preload("hover", "/electron/public/assets/sounds/hover.ogg");
+preload("click");
+preload("hover");
 
 function CancelButton(props) {
     const navigate = useNavigate()

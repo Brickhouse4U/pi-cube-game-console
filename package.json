@@ -29,6 +29,16 @@
       "dist/**/*",
       "electron/**/*"
     ],
+    "extraResources": [
+      {
+        "from": "public/assets/sounds",
+        "to": "sounds"
+      },
+      {
+        "from": "public/assets/pictures",
+        "to": "pictures"
+      }
+    ],
     "linux": {
       "target": [
         {

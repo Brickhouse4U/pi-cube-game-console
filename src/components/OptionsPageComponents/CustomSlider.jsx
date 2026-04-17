@@ -2,7 +2,7 @@ import style from "/src/styles/CustomSlider.module.css"
 import { preload, play } from "/electron/utils/sound.js";
 
 
-preload("hover", "/electron/public/assets/sounds/hover.ogg");
+preload("hover");
 
 function CustomSlider(props) {
     const percent = Math.round(parseFloat(props.value) * 100) + "%";
