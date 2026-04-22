@@ -37,7 +37,7 @@ function createWindow() {
   }
 
   // Temporarily open DevTools in all modes to debug
-  // win.webContents.openDevTools()
+  win.webContents.openDevTools()
 }
 
 ipcMain.handle('get-resources-path', () => {

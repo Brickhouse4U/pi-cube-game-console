@@ -3,20 +3,34 @@ import CustomSlider from "../components/OptionsPageComponents/CustomSlider";
 import CancelButton from "../components/Buttons/CancelButton";
 import OptionsStyle from "../styles/Options.module.css";
 import { preload } from "/electron/utils/sound";
+import { on, off, BUTTONS } from '/electron/utils/gamepad';
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { debounce } from "lodash";
+
+const SLIDERS = ['brightness', 'volume'];
 
 function Options() {
     const [brightness, setBrightnessState] = useState(1.0);
     const [volume, setVolumeState] = useState(1.0);
+    const [selectedSlider, setSelectedSlider] = useState(0);
+
+    const brightnessRef = useRef(1.0);
+    const volumeRef = useRef(1.0);
+    const selectedSliderRef = useRef(0);
 
     useEffect(() => {
         // Preload sounds
         preload("rollover");
 
-        window.brightness.get().then(setBrightnessState);
-        window.volume.get().then(setVolumeState);
+        window.brightness.get().then(v => {
+            setBrightnessState(v);
+            brightnessRef.current = v;
+        });
+        window.volume.get().then(v => {
+            setVolumeState(v);
+            volumeRef.current = v;
+        });
     }, []);
 
 
@@ -41,14 +55,65 @@ function Options() {
     const handleBrightnessChange = (e) => {
         const value = parseFloat(e.target.value);
         setBrightnessState(value);
+        brightnessRef.current = value;
         debouncedSetBrightness(value);
     };
 
     const handleVolumeChange = (e) => {
         const value = parseFloat(e.target.value);
         setVolumeState(value);
+        volumeRef.current = value;
         debouncedSetVolume(value);
     };
+
+    useEffect(() => {
+        const handleUp = () => {
+            const next = Math.max(0, selectedSliderRef.current - 1);
+            selectedSliderRef.current = next;
+            setSelectedSlider(next);
+        };
+
+        const handleDown = () => {
+            const next = Math.min(SLIDERS.length - 1, selectedSliderRef.current + 1);
+            selectedSliderRef.current = next;
+            setSelectedSlider(next);
+        };
+
+        const handleLeft = () => {
+            const slider = SLIDERS[selectedSliderRef.current];
+            if (slider === 'brightness') {
+                const next = Math.max(0.1, parseFloat((brightnessRef.current - 0.1).toFixed(1)));
+                brightnessRef.current = next;
+                setBrightnessState(next);
+                debouncedSetBrightness(next);
+            } else {
+                const next = Math.max(0.0, parseFloat((volumeRef.current - 0.1).toFixed(1)));
+                volumeRef.current = next;
+                setVolumeState(next);
+                debouncedSetVolume(next);
+            }
+        };
+
+        const handleRight = () => {
+            const slider = SLIDERS[selectedSliderRef.current];
+            if (slider === 'brightness') {
+                const next = Math.min(1.0, parseFloat((brightnessRef.current + 0.1).toFixed(1)));
+                brightnessRef.current = next;
+                setBrightnessState(next);
+                debouncedSetBrightness(next);
+            } else {
+                const next = Math.min(1.0, parseFloat((volumeRef.current + 0.1).toFixed(1)));
+                volumeRef.current = next;
+                setVolumeState(next);
+                debouncedSetVolume(next);
+            }
+        };
+
+        on(BUTTONS.DPAD_UP, handleUp);
+        on(BUTTONS.DPAD_DOWN, handleDown);
+        on(BUTTONS.DPAD_LEFT, handleLeft);
+        on(BUTTONS.DPAD_RIGHT, handleRight);
+    }, []);
 
     return (
 
@@ -60,7 +125,8 @@ function Options() {
                     max="1.0" 
                     step="0.1" 
                     value={brightness} 
-                    onChange={handleBrightnessChange}/>
+                    onChange={handleBrightnessChange}
+                    selected={selectedSlider === 0} />
 
                 <CustomSlider 
                     title="Volume:" 
@@ -68,7 +134,8 @@ function Options() {
                     max="1.0" 
                     step="0.1" 
                     value={volume} 
-                    onChange={handleVolumeChange}/>
+                    onChange={handleVolumeChange}
+                    selected={selectedSlider === 1} />
             </div>
             <CancelButton x="480px" y="480px" dst="/" />
         </CubeLayout>
