@@ -2,7 +2,7 @@ import CubeLayout from "../components/CubeLayout";
 import CustomSlider from "../components/OptionsPageComponents/CustomSlider";
 import CancelButton from "../components/Buttons/CancelButton";
 import OptionsStyle from "../styles/Options.module.css";
-import { preload } from "/electron/utils/sound";
+import { preload, play } from "/electron/utils/sound";
 import { on, off, BUTTONS } from '/electron/utils/gamepad';
 
 import { useState, useEffect, useMemo, useRef } from "react";
@@ -67,16 +67,19 @@ function Options() {
     };
 
     useEffect(() => {
+        preload("rollover");
         const handleUp = () => {
             const next = Math.max(0, selectedSliderRef.current - 1);
             selectedSliderRef.current = next;
             setSelectedSlider(next);
+            play("rollover");
         };
 
         const handleDown = () => {
             const next = Math.min(SLIDERS.length - 1, selectedSliderRef.current + 1);
             selectedSliderRef.current = next;
             setSelectedSlider(next);
+            play("rollover");
         };
 
         const handleLeft = () => {
@@ -92,6 +95,7 @@ function Options() {
                 setVolumeState(next);
                 debouncedSetVolume(next);
             }
+            play("rollover");
         };
 
         const handleRight = () => {
@@ -107,12 +111,20 @@ function Options() {
                 setVolumeState(next);
                 debouncedSetVolume(next);
             }
+            play("rollover");
         };
 
         on(BUTTONS.DPAD_UP, handleUp);
         on(BUTTONS.DPAD_DOWN, handleDown);
         on(BUTTONS.DPAD_LEFT, handleLeft);
         on(BUTTONS.DPAD_RIGHT, handleRight);
+
+        return () => {
+            off(BUTTONS.DPAD_UP, handleUp);
+            off(BUTTONS.DPAD_DOWN, handleDown);
+            off(BUTTONS.DPAD_LEFT, handleLeft);
+            off(BUTTONS.DPAD_RIGHT, handleRight);
+        };
     }, []);
 
     return (

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import CancelButtonStyle from "/src/styles/CancelButton.module.css"
 import { preload, play } from "/electron/utils/sound.js";
-import { on, BUTTONS } from '/electron/utils/gamepad';
+import { on, off, BUTTONS } from '/electron/utils/gamepad';
 import { useEffect, useState } from 'react';
 
 preload("click");
@@ -27,6 +27,10 @@ function CancelButton(props) {
         };
 
         on(BUTTONS.B, handleB);
+
+        return () => {
+            off(BUTTONS.B, handleB);
+        };
     }, [props.dst]);
 
     const getClassName = () => {

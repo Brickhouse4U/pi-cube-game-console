@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import UpButtonStyle from "/src/styles/UpButton.module.css"
 import { preload, play } from "/electron/utils/sound.js";
 import { getPicturePath } from "/electron/utils/assets.js";
-import { on, BUTTONS } from '/electron/utils/gamepad';
+import { on, off, BUTTONS } from '/electron/utils/gamepad';
 
 function UpButton() {
     const [src, setSrc] = useState("");
@@ -27,6 +27,10 @@ function UpButton() {
         };
 
         on(BUTTONS.DPAD_UP, handleUp);
+
+        return () => {
+            off(BUTTONS.DPAD_UP, handleUp);
+        };
     }, []);
 
     const getClassName = () => {

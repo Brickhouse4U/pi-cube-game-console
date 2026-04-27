@@ -4,6 +4,7 @@ import CubeLayoutStyle from "/src/styles/CubeLayout.module.css";
 import { start, stop, on, off, BUTTONS } from '/electron/utils/gamepad';
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { preload, play } from "/electron/utils/sound.js";
 
 const MENU_ITEMS = [
     { text: "Games", dst: "/games" },
@@ -17,30 +18,41 @@ function MainMenu() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        start();
+        preload("hover");
+        preload("click");
 
         const handleUp = () => {
             const next = Math.max(0, selectedIndexRef.current - 1);
             selectedIndexRef.current = next;
             setSelectedIndex(next);
+            play("hover");
         }
 
         const handleDown = () => {
             const next = Math.min(MENU_ITEMS.length - 1, selectedIndexRef.current + 1);
             selectedIndexRef.current = next;
             setSelectedIndex(next);
+            play("hover");
         }
 
         const handleA = () => {
             setPressedIndex(selectedIndexRef.current);
             setTimeout(() => {
                 navigate(MENU_ITEMS[selectedIndexRef.current].dst);
+                play("click");
             }, 150);
         }
 
         on(BUTTONS.A, handleA);
         on(BUTTONS.DPAD_UP, handleUp);
         on(BUTTONS.DPAD_DOWN, handleDown);
+
+        return () => {
+            off(BUTTONS.A, handleA);
+            off(BUTTONS.DPAD_UP, handleUp);
+            off(BUTTONS.DPAD_DOWN, handleDown);
+        };
+    
     }, []);
 
     return (
@@ -49,7 +61,6 @@ function MainMenu() {
             <div className={CubeLayoutStyle.container}>
                 {MENU_ITEMS.map((item, index) => (
                     <MenuOption 
-                        key={item.dst} 
                         dst={item.dst} 
                         text={item.text} 
                         selected={index === selectedIndex}

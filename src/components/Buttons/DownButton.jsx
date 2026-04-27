@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import DownButtonStyle from "/src/styles/DownButton.module.css"
 import { preload, play } from "/electron/utils/sound.js";
 import { getPicturePath } from "/electron/utils/assets.js";
-import { on, BUTTONS } from '/electron/utils/gamepad';
+import { on, off, BUTTONS } from '/electron/utils/gamepad';
 
 
 function DownButton() {
@@ -28,6 +28,10 @@ function DownButton() {
         };
 
         on(BUTTONS.DPAD_DOWN, handleDown);
+
+        return () => {
+            off(BUTTONS.DPAD_DOWN, handleDown);
+        };
     }, []);
 
     const getClassName = () => {
