@@ -5,6 +5,11 @@ body {
     place-items: center;
     background: #000;
     font-family: Arial, sans-serif;
+    cursor: none;
+}
+
+* {
+    cursor: none !important;
 }
 
 .layout {
@@ -71,3 +76,17 @@ h1 {
     top: 18px;
 }
 
+.bottomLeft {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    text-align: left;
+    color: #fff;
+    font-size: 18px;
+    line-height: 1.2;
+    pointer-events: none;
+}
+
+.bottomLeft p {
+    margin: 0;
+}

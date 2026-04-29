@@ -21,3 +21,13 @@
     background-color: red;
     transform: scale(0.95);      /* slight press down feel */
 }
+
+.pressed {
+    background-color: darkred;
+    transform: scale(0.95);      /* slight press down feel */
+}
+
+.pressedInput {
+    background-color: red;
+    transform: scale(0.95);      /* slight press down feel */
+}
