@@ -68,6 +68,10 @@ function MainMenu() {
                     />
                 ))}
             </div>
+            <div className={CubeLayoutStyle.bottomLeft}>
+                <p>Press Up/Down to Navigate</p>
+                <p>Press A to Select</p>
+            </div>
         </CubeLayout>
     )
 }

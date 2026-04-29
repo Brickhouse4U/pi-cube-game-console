@@ -55,7 +55,7 @@ function CancelButton(props) {
                 play("click");
                 navigate(props.dst);
             }}>
-            Cancel
+            Cancel (B)
         </button>
     )
 }

@@ -2,6 +2,7 @@ import CubeLayout from "../components/CubeLayout";
 import CustomSlider from "../components/OptionsPageComponents/CustomSlider";
 import CancelButton from "../components/Buttons/CancelButton";
 import OptionsStyle from "../styles/Options.module.css";
+import CubeLayoutStyle from "/src/styles/CubeLayout.module.css";
 import { preload, play } from "/electron/utils/sound";
 import { on, off, BUTTONS } from '/electron/utils/gamepad';
 
@@ -150,6 +151,11 @@ function Options() {
                     selected={selectedSlider === 1} />
             </div>
             <CancelButton x="480px" y="480px" dst="/" />
+            <div className={CubeLayoutStyle.bottomLeft}>
+                <p>Press Up/Down to Switch between Sliders</p>
+                <p>Press Left/Right to Adjust Values</p>
+                <p>Press B to Return to Main Menu</p>
+            </div>
         </CubeLayout>
     )
 }
