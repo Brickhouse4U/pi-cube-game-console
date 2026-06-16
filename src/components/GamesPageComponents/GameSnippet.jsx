@@ -1,8 +1,18 @@
 import style from '/src/styles/GameSnippet.module.css'
 
 function GameSnippet(props) {
+    const src = props.src.startsWith('file://') ? props.src : `file://${props.src}`;
+    
     return (
-        <img src={props.src} alt="Game Image" className={style.gameSnippetContainer} />
+        <div className={style.gameSnippetContainer}>
+            <video
+                src={src}
+                autoPlay
+                loop
+                muted
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+        </div>
     )
 }
 

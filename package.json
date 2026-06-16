@@ -7,7 +7,7 @@
     "build": "./node_modules/.bin/vite build",
     "electron": "./node_modules/.bin/electron .",
     "start": "./node_modules/.bin/concurrently \"npm run dev\" \"npm run electron\"",
-    "package:local": "vite build && electron-builder --linux --x64", 
+    "package:local": "vite build && electron-builder --linux --x64",
     "package:pi": "vite build && electron-builder --linux --armv7l"
   },
   "devDependencies": {
@@ -43,7 +43,9 @@
       "target": [
         {
           "target": "AppImage",
-          "arch": ["armv7l"]
+          "arch": [
+            "armv7l"
+          ]
         }
       ]
     }
