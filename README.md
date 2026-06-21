@@ -33,42 +33,36 @@ Pi Cube Game Console is a fullscreen Electron application that serves as the mai
 
 ## Current State
 
-The application currently provides basic navigation between two pages:
+The application provides a fully navigable menu with working hardware integration.
 
 ### Games Page
-- Placeholder UI for browsing and selecting games
-- Will display games stored on an external device
-- Currently shows placeholder game entries with no launch functionality
+- Browses games stored at `/media/picube/games/` on the device
+- Displays a video preview and title for the selected game
+- Launches games as a Python subprocess via Electron IPC
+- Gamepad A button launches the selected game; B button returns to the main menu
 
 ### Options Page
-- Placeholder UI for system settings
-- Displays brightness and volume controls
-- Controls are not yet functional — UI only
+- Brightness slider connected to system display via `ddcutil` (DDC/CI)
+- Volume slider connected to ALSA via `amixer`
+- Gamepad D-pad navigates between sliders and adjusts values
+- B button returns to the main menu
+
+### Main Menu
+- Lists available pages (Games, Options)
+- Gamepad D-pad up/down navigates; A selects
 
 ### Navigation
-- Users can switch between the Games page and Options page
-- Routing is handled by `react-router-dom`
+- Routing handled by `react-router-dom` with `HashRouter`
+- Gamepad input handled by a custom polling module using the browser Gamepad API
 
 ---
 
 ## Planned Features
 
-The following features will be implemented in this order:
+The following feature is still pending implementation:
 
-### 1. 🔆 Brightness Adjustment
-Connect the brightness slider on the Options page to the actual system display brightness. Will write to the Pi's backlight interface via Electron's Node.js backend.
-
-### 2. 💾 External Device Manager
+### 1. 💾 External Device Manager
 A new page for managing games and files stored on a USB drive or external storage device. Will allow users to browse, add, and remove games from the console.
-
-### 3. 🎮 Game Launcher Window
-A separate window for launching and running games. Games will open in their own window while the menu remains in the background, allowing the user to return to the menu after a game session ends.
-
-### 4. 🔊 Volume Integration
-Connect the volume slider on the Options page to the system audio level via ALSA. Will use Electron's Node.js backend to call `amixer` commands on the Pi.
-
-### 5. 🕹️ Gamepad Support
-Full gamepad/controller input support for navigating the menu without a keyboard or mouse. Will use the browser's Gamepad API to map controller inputs to menu navigation actions.
 
 ---
 
@@ -80,10 +74,12 @@ Full gamepad/controller input support for navigating the menu without a keyboard
 | `react` | ^18.3.1 | UI framework |
 | `react-dom` | ^18.3.1 | React DOM rendering |
 | `react-router-dom` | ^7.13.1 | Page routing / navigation |
+| `lodash` | ^4.17.21 | Debounce utility for slider input |
 
 ### Build Tools
 | Package | Version | Purpose |
 |---|---|---|
+| `typescript` | ^6.0.3 | Type checking for both renderer and main process |
 | `vite` | ^5.4.0 | Frontend bundler / dev server |
 | `@vitejs/plugin-react` | ^4.3.0 | React support for Vite |
 | `concurrently` | ^9.2.1 | Run Vite and Electron simultaneously in dev |
@@ -101,23 +97,41 @@ Full gamepad/controller input support for navigating the menu without a keyboard
 ```
 pi-cube-game-console/
 ├── electron/
-│   └── main.js              # Electron main process — window creation, IPC
+│   ├── main.ts              # Electron main process — window creation, IPC handlers
+│   ├── preload.ts           # Context bridge — exposes APIs to renderer
+│   └── utils/
+│       ├── assets.ts        # Resolves resource paths (sounds, pictures, game covers)
+│       ├── brightness.ts    # Display brightness via ddcutil (CommonJS, main process only)
+│       ├── gamepad.ts       # Gamepad polling using browser Gamepad API
+│       ├── sound.ts         # Audio preloading and playback
+│       └── volume.ts        # System volume via amixer (CommonJS, main process only)
 ├── src/
-│   ├── components/          # Reusable UI components
-│   │   ├── CancelButton.jsx
-│   │   ├── CustomSlider.jsx
-│   │   ├── DownButton.jsx
-│   │   ├── GameSnippet.jsx
-│   │   ├── Options.jsx
-│   │   └── UpButton.jsx
-│   ├── pages/               # Full page views
-│   │   ├── Games.jsx        # Games browser page
-│   │   └── MainMenu.jsx     # Main menu / landing page
+│   ├── components/
+│   │   ├── Buttons/
+│   │   │   ├── CancelButton.tsx
+│   │   │   ├── DownButton.tsx
+│   │   │   ├── MenuOption.tsx
+│   │   │   └── UpButton.tsx
+│   │   ├── GamesPageComponents/
+│   │   │   ├── GameSelectionsView.tsx
+│   │   │   └── GameSnippet.tsx
+│   │   ├── OptionsPageComponents/
+│   │   │   └── CustomSlider.tsx
+│   │   └── CubeLayout.tsx
+│   ├── pages/
+│   │   ├── Games.tsx        # Games browser page
+│   │   ├── MainMenu.tsx     # Main menu / landing page
+│   │   └── Options.tsx      # System settings page
 │   ├── styles/              # CSS module styles
-│   ├── App.jsx              # Root component + router setup
-│   └── main.jsx             # React entry point
+│   ├── electron.d.ts        # Window interface augmentation for preload APIs
+│   ├── vite-env.d.ts        # Vite client type reference
+│   ├── App.tsx              # Root component + router setup
+│   └── main.tsx             # React entry point
 ├── index.html               # Electron renderer entry point
-├── vite.config.js           # Vite configuration
+├── tsconfig.json            # TypeScript config for renderer + electron utils
+├── tsconfig.electron.json   # TypeScript config for electron main process (CommonJS)
+├── tsconfig.node.json       # TypeScript config for vite.config.ts
+├── vite.config.ts           # Vite configuration
 └── package.json
 ```
 
@@ -196,11 +210,12 @@ The Yocto build extracts the AppImage contents and installs them to `/opt/game-c
 ```
 ✅ Phase 0 — Project setup and Yocto deployment
 ✅ Phase 1 — Basic page navigation (Games + Options)
-⬜ Phase 2 — Brightness adjustment (Options → system)
+✅ Phase 2 — Brightness adjustment (Options → ddcutil → display)
 ⬜ Phase 3 — External device manager page
-⬜ Phase 4 — Game launcher window
-⬜ Phase 5 — Volume integration (Options → ALSA)
-⬜ Phase 6 — Gamepad / controller support
+✅ Phase 4 — Game launcher (spawn Python subprocess via IPC)
+✅ Phase 5 — Volume integration (Options → amixer → ALSA)
+✅ Phase 6 — Gamepad / controller support (browser Gamepad API)
+✅ Phase 7 — Full TypeScript migration (renderer + main process)
 ```
 
 ---

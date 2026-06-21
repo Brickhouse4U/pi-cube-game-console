@@ -1,12 +1,19 @@
-import style from "/src/styles/MenuOption.module.css"
+import style from "/src/styles/MenuOption.module.css";
 import lableStyle from "/src/styles/CubeLayout.module.css";
-import { preload, play } from "/electron/utils/sound.js";
+import { preload, play } from "/electron/utils/sound";
 import { Link } from 'react-router-dom';
 
 preload("click");
 preload("hover");
 
-function MenuOption({ dst, text, selected, pressed }) {
+interface MenuOptionProps {
+    dst: string;
+    text: string;
+    selected: boolean;
+    pressed: boolean | null;
+}
+
+function MenuOption({ dst, text, selected, pressed }: MenuOptionProps) {
     const className = pressed
         ? `${lableStyle.label} ${style.selectedInput}`
         : selected
@@ -22,7 +29,7 @@ function MenuOption({ dst, text, selected, pressed }) {
         >
             {text}
         </Link>
-    )
+    );
 }
 
 export default MenuOption;

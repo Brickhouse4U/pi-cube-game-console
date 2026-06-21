@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import UpButtonStyle from "/src/styles/UpButton.module.css"
-import { preload, play } from "/electron/utils/sound.js";
-import { getPicturePath } from "/electron/utils/assets.js";
+import UpButtonStyle from "/src/styles/UpButton.module.css";
+import { preload, play } from "/electron/utils/sound";
+import { getPicturePath } from "/electron/utils/assets";
 import { on, off, BUTTONS } from '/electron/utils/gamepad';
 
 function UpButton() {
@@ -36,22 +36,21 @@ function UpButton() {
     const getClassName = () => {
         if (pressed) {
             return `${UpButtonStyle.container} ${UpButtonStyle.selected}`;
-        }
-        else if (pressedInput) {
+        } else if (pressedInput) {
             return `${UpButtonStyle.container} ${UpButtonStyle.selectedInput}`;
         }
         return UpButtonStyle.container;
     };
 
     return (
-        <button 
+        <button
             className={getClassName()}
             onMouseOver={() => play("hover")}
             onClick={() => play("click")}
         >
             {src && <img src={src} />}
         </button>
-    )
+    );
 }
 
-export default UpButton
+export default UpButton;

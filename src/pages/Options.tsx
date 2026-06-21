@@ -1,3 +1,4 @@
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import CubeLayout from "../components/CubeLayout";
 import CustomSlider from "../components/OptionsPageComponents/CustomSlider";
 import CancelButton from "../components/Buttons/CancelButton";
@@ -5,8 +6,6 @@ import OptionsStyle from "../styles/Options.module.css";
 import CubeLayoutStyle from "/src/styles/CubeLayout.module.css";
 import { preload, play } from "/electron/utils/sound";
 import { on, off, BUTTONS } from '/electron/utils/gamepad';
-
-import { useState, useEffect, useMemo, useRef } from "react";
 import { debounce } from "lodash";
 
 const SLIDERS = ['brightness', 'volume'];
@@ -16,12 +15,11 @@ function Options() {
     const [volume, setVolumeState] = useState(1.0);
     const [selectedSlider, setSelectedSlider] = useState(0);
 
-    const brightnessRef = useRef(1.0);
-    const volumeRef = useRef(1.0);
-    const selectedSliderRef = useRef(0);
+    const brightnessRef = useRef<number>(1.0);
+    const volumeRef = useRef<number>(1.0);
+    const selectedSliderRef = useRef<number>(0);
 
     useEffect(() => {
-        // Preload sounds
         preload("rollover");
 
         window.brightness.get().then(v => {
@@ -34,18 +32,14 @@ function Options() {
         });
     }, []);
 
-
-    // Debounced brightness setter
     const debouncedSetBrightness = useMemo(() =>
-        debounce((value) => window.brightness.set(value), 100)
+        debounce((value: number) => window.brightness.set(value), 100)
     , []);
 
-    // Debounced volume setter
     const debouncedSetVolume = useMemo(() =>
-        debounce((value) => window.volume.set(value), 100)
+        debounce((value: number) => window.volume.set(value), 100)
     , []);
-    
-    // Cleanup debounces on unmount
+
     useEffect(() => {
         return () => {
             debouncedSetBrightness.cancel();
@@ -53,14 +47,14 @@ function Options() {
         };
     }, [debouncedSetBrightness, debouncedSetVolume]);
 
-    const handleBrightnessChange = (e) => {
+    const handleBrightnessChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = parseFloat(e.target.value);
         setBrightnessState(value);
         brightnessRef.current = value;
         debouncedSetBrightness(value);
     };
 
-    const handleVolumeChange = (e) => {
+    const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = parseFloat(e.target.value);
         setVolumeState(value);
         volumeRef.current = value;
@@ -126,27 +120,26 @@ function Options() {
             off(BUTTONS.DPAD_LEFT, handleLeft);
             off(BUTTONS.DPAD_RIGHT, handleRight);
         };
-    }, []);
+    }, [debouncedSetBrightness, debouncedSetVolume]);
 
     return (
-
         <CubeLayout width="640px" height="640px">
-            <div className={OptionsStyle.container} width="320px" height="320px">
-                <CustomSlider 
-                    title="Brightness: " 
-                    min="0.1" 
-                    max="1.0" 
-                    step="0.1" 
-                    value={brightness} 
+            <div className={OptionsStyle.container} style={{ width: "320px", height: "320px" }}>
+                <CustomSlider
+                    title="Brightness: "
+                    min="0.1"
+                    max="1.0"
+                    step="0.1"
+                    value={brightness}
                     onChange={handleBrightnessChange}
                     selected={selectedSlider === 0} />
 
-                <CustomSlider 
-                    title="Volume:" 
-                    min="0.0" 
-                    max="1.0" 
-                    step="0.1" 
-                    value={volume} 
+                <CustomSlider
+                    title="Volume:"
+                    min="0.0"
+                    max="1.0"
+                    step="0.1"
+                    value={volume}
                     onChange={handleVolumeChange}
                     selected={selectedSlider === 1} />
             </div>
@@ -157,7 +150,7 @@ function Options() {
                 <p>Press B to Return to Main Menu</p>
             </div>
         </CubeLayout>
-    )
+    );
 }
 
-export default Options
+export default Options;

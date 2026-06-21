@@ -1,20 +1,25 @@
 import CubeLayout from "../components/CubeLayout";
 import MenuOption from "../components/Buttons/MenuOption";
 import CubeLayoutStyle from "/src/styles/CubeLayout.module.css";
-import { start, stop, on, off, BUTTONS } from '/electron/utils/gamepad';
+import { on, off, BUTTONS } from '/electron/utils/gamepad';
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { preload, play } from "/electron/utils/sound.js";
+import { preload, play } from "/electron/utils/sound";
 
-const MENU_ITEMS = [
+interface MenuItem {
+    text: string;
+    dst: string;
+}
+
+const MENU_ITEMS: MenuItem[] = [
     { text: "Games", dst: "/games" },
     { text: "Options", dst: "/options" },
 ];
 
 function MainMenu() {
     const [selectedIndex, setSelectedIndex] = useState(0);
-    const [pressedIndex, setPressedIndex] = useState(null);
-    const selectedIndexRef = useRef(0);
+    const [pressedIndex, setPressedIndex] = useState<number | null>(null);
+    const selectedIndexRef = useRef<number>(0);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -26,14 +31,14 @@ function MainMenu() {
             selectedIndexRef.current = next;
             setSelectedIndex(next);
             play("hover");
-        }
+        };
 
         const handleDown = () => {
             const next = Math.min(MENU_ITEMS.length - 1, selectedIndexRef.current + 1);
             selectedIndexRef.current = next;
             setSelectedIndex(next);
             play("hover");
-        }
+        };
 
         const handleA = () => {
             setPressedIndex(selectedIndexRef.current);
@@ -41,7 +46,7 @@ function MainMenu() {
                 navigate(MENU_ITEMS[selectedIndexRef.current].dst);
                 play("click");
             }, 150);
-        }
+        };
 
         on(BUTTONS.A, handleA);
         on(BUTTONS.DPAD_UP, handleUp);
@@ -52,17 +57,17 @@ function MainMenu() {
             off(BUTTONS.DPAD_UP, handleUp);
             off(BUTTONS.DPAD_DOWN, handleDown);
         };
-    
-    }, []);
+    }, [navigate]);
 
     return (
         <CubeLayout width="640px" height="640px">
             <h1>Pi Cube</h1>
             <div className={CubeLayoutStyle.container}>
                 {MENU_ITEMS.map((item, index) => (
-                    <MenuOption 
-                        dst={item.dst} 
-                        text={item.text} 
+                    <MenuOption
+                        key={item.dst}
+                        dst={item.dst}
+                        text={item.text}
                         selected={index === selectedIndex}
                         pressed={index === pressedIndex}
                     />
@@ -73,7 +78,7 @@ function MainMenu() {
                 <p>Press A to Select</p>
             </div>
         </CubeLayout>
-    )
+    );
 }
 
 export default MainMenu;

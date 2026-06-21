@@ -1,25 +1,23 @@
-const { contextBridge, ipcRenderer } = require('electron');
-
-contextBridge.exposeInMainWorld('electron', {
-    getResourcesPath: () => ipcRenderer.invoke('get-resources-path'),
-    readDirectory: (dirPath) => ipcRenderer.invoke('read-directory', dirPath),
-    readGameTitle: (filePath) => ipcRenderer.invoke('read-game-title', filePath),
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const electron_1 = require("electron");
+electron_1.contextBridge.exposeInMainWorld('electron', {
+    getResourcesPath: () => electron_1.ipcRenderer.invoke('get-resources-path'),
+    readDirectory: (dirPath) => electron_1.ipcRenderer.invoke('read-directory', dirPath),
+    readGameTitle: (filePath) => electron_1.ipcRenderer.invoke('read-game-title', filePath),
 });
-
-contextBridge.exposeInMainWorld('brightness', {
-    get: () => ipcRenderer.invoke('brightness:get'),
-    set: (value) => ipcRenderer.invoke('brightness:set', value),
+electron_1.contextBridge.exposeInMainWorld('brightness', {
+    get: () => electron_1.ipcRenderer.invoke('brightness:get'),
+    set: (value) => electron_1.ipcRenderer.invoke('brightness:set', value),
 });
-
-contextBridge.exposeInMainWorld('volume', {
-    get: () => ipcRenderer.invoke('get-volume'),
-    set: (level) => ipcRenderer.invoke('set-volume', level),
-    toggle: () => ipcRenderer.invoke('toggle-mute'),
+electron_1.contextBridge.exposeInMainWorld('volume', {
+    get: () => electron_1.ipcRenderer.invoke('get-volume'),
+    set: (level) => electron_1.ipcRenderer.invoke('set-volume', level),
+    toggle: () => electron_1.ipcRenderer.invoke('toggle-mute'),
 });
-
-contextBridge.exposeInMainWorld('games', {
-    launch: (gameId) => ipcRenderer.invoke('launch-game', gameId),
-    kill: () => ipcRenderer.invoke('kill-game'),
-    onClosed: (callback) => ipcRenderer.on('game-closed', callback),
-    offClosed: (callback) => ipcRenderer.removeListener('game-closed', callback),
+electron_1.contextBridge.exposeInMainWorld('games', {
+    launch: (gameId) => electron_1.ipcRenderer.invoke('launch-game', gameId),
+    kill: () => electron_1.ipcRenderer.invoke('kill-game'),
+    onClosed: (callback) => electron_1.ipcRenderer.on('game-closed', callback),
+    offClosed: (callback) => electron_1.ipcRenderer.removeListener('game-closed', callback),
 });

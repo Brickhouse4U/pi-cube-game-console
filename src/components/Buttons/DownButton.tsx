@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import DownButtonStyle from "/src/styles/DownButton.module.css"
-import { preload, play } from "/electron/utils/sound.js";
-import { getPicturePath } from "/electron/utils/assets.js";
+import DownButtonStyle from "/src/styles/DownButton.module.css";
+import { preload, play } from "/electron/utils/sound";
+import { getPicturePath } from "/electron/utils/assets";
 import { on, off, BUTTONS } from '/electron/utils/gamepad';
-
 
 function DownButton() {
     const [src, setSrc] = useState("");
@@ -37,22 +36,21 @@ function DownButton() {
     const getClassName = () => {
         if (pressed) {
             return `${DownButtonStyle.container} ${DownButtonStyle.selected}`;
-        }
-        else if (pressedInput) {
+        } else if (pressedInput) {
             return `${DownButtonStyle.container} ${DownButtonStyle.selectedInput}`;
         }
         return DownButtonStyle.container;
     };
 
     return (
-        <button 
+        <button
             className={getClassName()}
             onMouseOver={() => play("hover")}
             onClick={() => play("click")}
         >
             {src && <img src={src} />}
         </button>
-    )
+    );
 }
 
 export default DownButton;

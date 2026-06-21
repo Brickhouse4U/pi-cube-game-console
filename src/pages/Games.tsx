@@ -4,16 +4,15 @@ import CubeLayout from "../components/CubeLayout";
 import GameSelectionsView from "../components/GamesPageComponents/GameSelectionsView";
 import GameSnippet from "../components/GamesPageComponents/GameSnippet";
 import CubeLayoutStyle from "/src/styles/CubeLayout.module.css";
-import { getGamePreview, getGameTitleFile, availableGameCovers } from "/electron/utils/assets.js";
+import { getGamePreview, getGameTitleFile, availableGameCovers } from "/electron/utils/assets";
 import { on, off, BUTTONS } from '/electron/utils/gamepad';
 
 function Games() {
     const [gameSrc, setGameSrc] = useState("");
     const [gameTitle, setGameTitle] = useState("");
-    const [gameId, setGameId] = useState("");
-    const gameIdRef = useRef("");
+    const gameIdRef = useRef<string>("");
 
-    const loadGames = async (retries = 5, delay = 2000) => {
+    const loadGames = async (retries: number = 5, delay: number = 2000): Promise<void> => {
         const files = await availableGameCovers();
 
         if (files.length === 0) {
@@ -34,7 +33,6 @@ function Games() {
             });
         });
 
-        setGameId(files[0]);
         gameIdRef.current = files[0];
     };
 
@@ -55,7 +53,7 @@ function Games() {
 
     return (
         <CubeLayout width="800px" height="800px">
-            <GameSelectionsView nextGame={gameTitle} currentGame={gameTitle} prevGame={gameTitle}/>
+            <GameSelectionsView nextGame={gameTitle} currentGame={gameTitle} prevGame={gameTitle} />
 
             {gameSrc && <GameSnippet src={gameSrc} />}
 
@@ -67,7 +65,7 @@ function Games() {
                 <p>Press B to Return to Main Menu</p>
             </div>
         </CubeLayout>
-    )
+    );
 }
 
-export default Games
+export default Games;

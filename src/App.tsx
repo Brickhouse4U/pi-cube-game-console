@@ -1,5 +1,5 @@
-import { HashRouter, Link, Route, Routes } from 'react-router-dom';
-import MainMenu from './pages/MainMenu'
+import { HashRouter, Route, Routes } from 'react-router-dom';
+import MainMenu from './pages/MainMenu';
 import Games from './pages/Games';
 import Options from './pages/Options';
 import { start } from '../electron/utils/gamepad';

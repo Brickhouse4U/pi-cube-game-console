@@ -1,4 +1,6 @@
-const BUTTONS = {
+type ButtonCallback = () => void;
+
+export const BUTTONS: Record<string, number> = {
     A: 0,
     B: 1,
     X: 2,
@@ -15,28 +17,28 @@ const BUTTONS = {
     DPAD_RIGHT: 15,
 };
 
-const AXES = {
+export const AXES: Record<string, number> = {
     LEFT_X: 0,
     LEFT_Y: 1,
     RIGHT_X: 2,
     RIGHT_Y: 3,
 };
 
-const listeners = {};
-let animationFrame = null;
-const prevButtons = {};
+const listeners: Record<number, ButtonCallback[]> = {};
+let animationFrame: number | null = null;
+const prevButtons: Record<number, boolean> = {};
 
-function on(button, callback) {
+export function on(button: number, callback: ButtonCallback): void {
     if (!listeners[button]) listeners[button] = [];
     listeners[button].push(callback);
 }
 
-function off(button, callback) {
+export function off(button: number, callback: ButtonCallback): void {
     if (!listeners[button]) return;
     listeners[button] = listeners[button].filter(cb => cb !== callback);
 }
 
-function poll() {
+function poll(): void {
     const gamepads = navigator.getGamepads();
     for (const gp of gamepads) {
         if (!gp) continue;
@@ -44,7 +46,6 @@ function poll() {
             const wasPressed = prevButtons[index] || false;
             const isPressed = btn.pressed;
             if (isPressed && !wasPressed) {
-                // Button just pressed
                 if (listeners[index]) {
                     listeners[index].forEach(cb => cb());
                 }
@@ -55,21 +56,19 @@ function poll() {
     animationFrame = requestAnimationFrame(poll);
 }
 
-function start() {
-    window.addEventListener('gamepadconnected', (e) => {
+export function start(): void {
+    window.addEventListener('gamepadconnected', (e: GamepadEvent) => {
         console.log('Gamepad connected:', e.gamepad.id);
         if (!animationFrame) poll();
     });
-    window.addEventListener('gamepaddisconnected', (e) => {
+    window.addEventListener('gamepaddisconnected', (e: GamepadEvent) => {
         console.log('Gamepad disconnected:', e.gamepad.id);
     });
 }
 
-function stop() {
+export function stop(): void {
     if (animationFrame) {
         cancelAnimationFrame(animationFrame);
         animationFrame = null;
     }
 }
-
-export { BUTTONS, AXES, on, off, start, stop };
